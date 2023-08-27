@@ -8,7 +8,6 @@
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <ctime>
-#include <iostream>
 
 int main()
 {
@@ -17,17 +16,20 @@ int main()
 
     // Crear una ventana a pantalla completa
     sf::VideoMode vm = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window(vm, "Simple Circle", sf::Style::Fullscreen);
+    sf::RenderWindow window(vm, "Screen Saver", sf::Style::Fullscreen);
 
-    // Inicializar el círculo
-    sf::CircleShape circle;
-    float radius = 50; // Un radio de tamaño fijo, por ejemplo 50
-    circle.setRadius(radius);
-    circle.setFillColor(sf::Color::Green); // Color fijo, por ejemplo verde
+    const int NUM_CIRCLES = 10;
+    sf::CircleShape circles[NUM_CIRCLES];
 
-    // Posición aleatoria
-    circle.setPosition(std::rand() % (static_cast<int>(vm.width) - static_cast<int>(radius * 2)),
-                       std::rand() % (static_cast<int>(vm.height) - static_cast<int>(radius * 2)));
+    // Inicializar los círculos con tamaños y colores aleatorios
+    for (int i = 0; i < NUM_CIRCLES; ++i)
+    {
+        float radius = std::rand() % 100 + 10;
+        circles[i].setRadius(radius);
+        circles[i].setFillColor(sf::Color(std::rand() % 256, std::rand() % 256, std::rand() % 256));
+        circles[i].setPosition(std::rand() % (static_cast<int>(vm.width) - static_cast<int>(radius * 2)),
+                               std::rand() % (static_cast<int>(vm.height) - static_cast<int>(radius * 2)));
+    }
 
     while (window.isOpen())
     {
@@ -43,9 +45,12 @@ int main()
             }
         }
 
-        // Dibujar el círculo
+        // Dibujar todo
         window.clear();
-        window.draw(circle);
+        for (int i = 0; i < NUM_CIRCLES; ++i)
+        {
+            window.draw(circles[i]);
+        }
         window.display();
     }
 
