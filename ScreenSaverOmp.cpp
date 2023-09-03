@@ -1,10 +1,3 @@
-// Universidad del Valle de Guatemala
-// Computacion Paralela y distribuida
-// Proyecto 1
-// Cristian Aguirre   20361
-// Paola de Leon      20308
-// Marco Jurado       20231
-
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <ctime>
@@ -20,6 +13,7 @@ struct MovingCircle
 // Función para mover los círculos y comprobar colisiones
 void MoveCircles(MovingCircle circles[], int NUM_CIRCLES, sf::VideoMode vm)
 {
+#pragma omp parallel for
     for (int i = 0; i < NUM_CIRCLES; ++i)
     {
         sf::Vector2f pos = circles[i].shape.getPosition();
