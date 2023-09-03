@@ -38,6 +38,15 @@ int main(int argc, char *argv[])
     sf::VideoMode vm = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(vm, "Screen Saver", sf::Style::Fullscreen);
 
+    // LImite de FPS
+    window.setFramerateLimit(50);
+
+    // Desactivar la sincronización vertical
+    window.setVerticalSyncEnabled(false);
+
+    sf::Clock clock; // Inicializa un reloj para medir el tiempo entre frames
+    float lastTime = 0;
+
     MovingCircle circles[NUM_CIRCLES];
 
     // Inicializar los círculos
@@ -53,6 +62,12 @@ int main(int argc, char *argv[])
 
     while (window.isOpen())
     {
+        float currentTime = clock.restart().asSeconds(); // reiniciar reloj y obtener tiempo como float
+        float fps = 1.f / currentTime;                   // calcular los FPS
+        std::cout << "FPS: " << fps << std::endl;        // mostrar los FPS en la consola
+
+        lastTime = currentTime; // actualizar lastTime
+
         // Procesar eventos
         sf::Event event;
         while (window.pollEvent(event))
@@ -74,11 +89,39 @@ int main(int argc, char *argv[])
 
             if (pos.x <= 0 || pos.x + 2 * radius >= vm.width)
             {
-                vel.x = -vel.x;
+                // Asegurarse de que la nueva velocidad sea lo suficientemente alta
+                do
+                {
+                    vel.x = std::rand() % 200 - 100;
+                } while (std::abs(vel.x) < 50); // velocidad mínima de 50
+
+                // Corregir la posición para evitar pegarse al borde
+                if (pos.x <= 0)
+                {
+                    circles[i].shape.setPosition(1.0f, pos.y);
+                }
+                else
+                {
+                    circles[i].shape.setPosition(vm.width - 2 * radius - 1.0f, pos.y);
+                }
             }
             if (pos.y <= 0 || pos.y + 2 * radius >= vm.height)
             {
-                vel.y = -vel.y;
+                // Asegurarse de que la nueva velocidad sea lo suficientemente alta
+                do
+                {
+                    vel.y = std::rand() % 200 - 100;
+                } while (std::abs(vel.y) < 50); // velocidad mínima de 50
+
+                // Corregir la posición para evitar pegarse al borde
+                if (pos.y <= 0)
+                {
+                    circles[i].shape.setPosition(pos.x, 1.0f);
+                }
+                else
+                {
+                    circles[i].shape.setPosition(pos.x, vm.height - 2 * radius - 1.0f);
+                }
             }
 
             circles[i].shape.move(vel * 0.05f);
