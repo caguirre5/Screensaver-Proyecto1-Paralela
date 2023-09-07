@@ -148,6 +148,8 @@ int main(int argc, char *argv[])
     float frameCounter = 0;
     double tiempo_total = 0.0;
     int numiteraciones = 0;
+    int total_frames = 0;
+
 
 
     while (window.isOpen())
@@ -157,6 +159,7 @@ int main(int argc, char *argv[])
 
         // Calcular los FPS (fotogramas por segundo)
         float fps = 1.f / currentTime;
+        total_frames++;
 
         // Mostrar los FPS en la consola
         std::cout << "FPS: " << fps << std::endl;
@@ -194,6 +197,9 @@ int main(int argc, char *argv[])
     }
     double tiempo_promedio = tiempo_total / numiteraciones;
     std::cout << "Tiempo promedio de ejecución: " << tiempo_promedio << " segundos" << std::endl;
+    float promedio_fps = static_cast<float>(total_frames) / tiempo_total;
+    std::cout << "Promedio de FPS: " << promedio_fps << std::endl;
+
 
 
     return 0;

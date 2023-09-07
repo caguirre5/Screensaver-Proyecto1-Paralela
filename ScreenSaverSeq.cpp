@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <chrono>
 
 // Estructura para representar un círculo móvil
 struct MovingCircle
@@ -151,6 +152,9 @@ int main(int argc, char *argv[])
 
     sf::Clock clock;
     float frameCounter = 0;
+    double tiempo_total = 0.0;
+    int numiteraciones = 0;
+    int total_frames = 0;
 
     while (window.isOpen())
     {
@@ -159,6 +163,8 @@ int main(int argc, char *argv[])
 
         // Calcular los FPS (fotogramas por segundo)
         float fps = 1.f / currentTime;
+        total_frames++;
+
 
         // Mostrar los FPS en la consola
         std::cout << "FPS: " << fps << std::endl;
@@ -178,13 +184,25 @@ int main(int argc, char *argv[])
                 window.close();
             }
         }
-
+        auto start_time = std::chrono::high_resolution_clock::now();
         // Mover y comprobar colisiones para cada círculo
         MoveCircles(circles, NUM_CIRCLES, vm);
 
         // Renderizar los círculos y el texto de los FPS
         RenderCircles(window, circles, NUM_CIRCLES, fpsText);
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+        double tiempo_iteracion = duration.count() / 1e6; // Convierte microsegundos a segundos
+        tiempo_total += tiempo_iteracion;
+        numiteraciones += 1;
+
+        std::cout << "Tiempo transcurrido: " << duration.count() << " microsegundos" << std::endl;
+
     }
+    double tiempo_promedio = tiempo_total / numiteraciones;
+    std::cout << "Tiempo promedio de ejecución: " << tiempo_promedio << " segundos" << std::endl;
+    float promedio_fps = static_cast<float>(total_frames) / tiempo_total;
+    std::cout << "Promedio de FPS: " << promedio_fps << std::endl;
 
     return 0;
 }
